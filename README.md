@@ -56,6 +56,14 @@ $logger->debug('Hello, world!', [
 
 ## Test run
 
+Create your `phpunit.xml` file:
+
+```bash
+cp phpunit.xml.dist phpunit.xml
+```
+
+Open your `phpunit.xml` file and set the following environment variables: `TELEGRAM_TOKEN` and `TELEGRAM_RECIPIENT`, then:
+
 ```bash
 php vendor/bin/phpunit --colors=always --coverage-text
 ```
