@@ -19,15 +19,39 @@ composer require arus/monolog-telegram-handler
 use Arus\Monolog\Handler\TelegramHandler;
 use Monolog\Logger;
 
-$token = '...';
-$recipients = ['...'];
-$minimalLevel = Logger::DEBUG;
+$token = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11';
+$recipients = ['@channelusername'];
 
-$handler = new TelegramHandler($token, $recipients, $minimalLevel);
+$sender = new TelegramHandler($token, $recipients);
 
-$logger = new Logger('app.name');
-$logger->pushHandler($handler);
+$logger = new Logger('app');
+$logger->pushHandler($sender);
+
 $logger->debug('Hello, world!');
+```
+
+### Send a photo...
+
+```php
+$logger->debug('Hello, world!', [
+    'photo' => 'https://...',
+]);
+```
+
+### Send a animation...
+
+```php
+$logger->debug('Hello, world!', [
+    'animation' => 'https://...',
+]);
+```
+
+### Send a video...
+
+```php
+$logger->debug('Hello, world!', [
+    'video' => 'https://...',
+]);
 ```
 
 ## Test run
