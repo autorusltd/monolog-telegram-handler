@@ -38,7 +38,7 @@ $logger->debug('Hello, world!', [
 ]);
 ```
 
-### Send a animation...
+### Send an animation...
 
 ```php
 $logger->debug('Hello, world!', [
