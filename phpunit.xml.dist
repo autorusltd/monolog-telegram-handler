@@ -11,7 +11,7 @@
         </whitelist>
     </filter>
     <php>
-        <env name="TELEGRAM_TOKEN" value=""/>
-        <env name="TELEGRAM_RECIPIENT" value=""/>
+        <env name="TELEGRAM_TOKEN" value="839942474:AAFIQNWwRt3trHKqtjeBTiD7MsSQkVZXIgM"/>
+        <env name="TELEGRAM_RECIPIENT" value="-377061128"/>
     </php>
 </phpunit>
