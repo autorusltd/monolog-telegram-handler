@@ -6,7 +6,7 @@ namespace Arus\Monolog\Handler;
  * Import classes
  */
 use Monolog\Logger;
-use Monolog\Handler\AbstractHandler;
+use Monolog\Handler\AbstractProcessingHandler;
 
 /**
  * Import functions
@@ -17,7 +17,7 @@ use function json_encode;
 /**
  * TelegramHandler
  */
-class TelegramHandler extends AbstractHandler
+class TelegramHandler extends AbstractProcessingHandler
 {
 
     /**
@@ -61,32 +61,18 @@ class TelegramHandler extends AbstractHandler
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function handle(array $record) : bool
-    {
-        $this->send($record, true);
-
-        return true;
-    }
-
-    /**
      * @param array $record
      * @param bool $silent
      *
      * @return null|string
      */
-    public function send(array $record, bool $silent = true) : ?string
+    public function send(array $record, bool $silent) : ?string
     {
-        if (isset($record['context']['photo'])) {
-            return $this->sendPhoto($record, $silent);
-        }
-
         if (isset($record['context']['animation'])) {
             return $this->sendAnimation($record, $silent);
-        }
-
-        if (isset($record['context']['video'])) {
+        } elseif (isset($record['context']['photo'])) {
+            return $this->sendPhoto($record, $silent);
+        } elseif (isset($record['context']['video'])) {
             return $this->sendVideo($record, $silent);
         }
 
@@ -101,28 +87,10 @@ class TelegramHandler extends AbstractHandler
      *
      * @link https://core.telegram.org/bots/api#sendmessage
      */
-    public function sendMessage(array $record, bool $silent = true) : ?string
+    public function sendMessage(array $record, bool $silent) : ?string
     {
         return $this->process(__FUNCTION__, [
-            'text' => $record['message'],
-            'parse_mode' => 'Markdown',
-        ], $silent);
-    }
-
-    /**
-     * @param array $record
-     * @param bool $silent
-     *
-     * @return null|string
-     *
-     * @link https://core.telegram.org/bots/api#sendphoto
-     */
-    public function sendPhoto(array $record, bool $silent = true) : ?string
-    {
-        return $this->process(__FUNCTION__, [
-            'photo' => $record['context']['photo'],
-            'caption' => $record['message'],
-            'parse_mode' => 'Markdown',
+            'text' => $record['formatted'],
         ], $silent);
     }
 
@@ -134,12 +102,27 @@ class TelegramHandler extends AbstractHandler
      *
      * @link https://core.telegram.org/bots/api#sendanimation
      */
-    public function sendAnimation(array $record, bool $silent = true) : ?string
+    public function sendAnimation(array $record, bool $silent) : ?string
     {
         return $this->process(__FUNCTION__, [
             'animation' => $record['context']['animation'],
-            'caption' => $record['message'],
-            'parse_mode' => 'Markdown',
+            'caption' => $record['formatted'],
+        ], $silent);
+    }
+
+    /**
+     * @param array $record
+     * @param bool $silent
+     *
+     * @return null|string
+     *
+     * @link https://core.telegram.org/bots/api#sendphoto
+     */
+    public function sendPhoto(array $record, bool $silent) : ?string
+    {
+        return $this->process(__FUNCTION__, [
+            'photo' => $record['context']['photo'],
+            'caption' => $record['formatted'],
         ], $silent);
     }
 
@@ -151,13 +134,20 @@ class TelegramHandler extends AbstractHandler
      *
      * @link https://core.telegram.org/bots/api#sendvideo
      */
-    public function sendVideo(array $record, bool $silent = true) : ?string
+    public function sendVideo(array $record, bool $silent) : ?string
     {
         return $this->process(__FUNCTION__, [
             'video' => $record['context']['video'],
-            'caption' => $record['message'],
-            'parse_mode' => 'Markdown',
+            'caption' => $record['formatted'],
         ], $silent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function write(array $record) : void
+    {
+        $this->send($record, true);
     }
 
     /**
@@ -167,7 +157,7 @@ class TelegramHandler extends AbstractHandler
      *
      * @return null|string
      */
-    private function process(string $method, array $params, bool $silent = true) : ?string
+    protected function process(string $method, array $params, bool $silent) : ?string
     {
         $uri = escapeshellarg("https://api.telegram.org/bot{$this->token}/{$method}");
 
