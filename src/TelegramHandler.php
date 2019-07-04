@@ -164,7 +164,7 @@ class TelegramHandler extends AbstractProcessingHandler
         $output = '';
 
         foreach ($this->recipients as $recipient) {
-            $data = escapeshellarg(json_encode($params + ['chat_id' => $recipient]));
+            $data = escapeshellarg(json_encode(($params + ['chat_id' => $recipient]), JSON_UNESCAPED_UNICODE));
 
             if ($silent) {
                 `curl -s -X 'POST' -H 'Content-Type: application/json' -d $data $uri > /dev/null 2>&1 &`;
