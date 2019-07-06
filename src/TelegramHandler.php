@@ -31,17 +31,51 @@ class TelegramHandler extends AbstractProcessingHandler
     private $recipients;
 
     /**
+     * @var int
+     */
+    private $jsonOptions = 0;
+
+    /**
+     * @var int
+     */
+    private $jsonDepth = 512;
+
+    /**
      * @param string $token
      * @param array $recipients
      * @param int $level
      * @param bool $bubble
      */
-    public function __construct(string $token, array $recipients, int $level = Logger::DEBUG, bool $bubble = true)
-    {
+    public function __construct(
+        string $token,
+        array $recipients,
+        int $level = Logger::DEBUG,
+        bool $bubble = true
+    ) {
         $this->token = $token;
         $this->recipients = $recipients;
 
         parent::__construct($level, $bubble);
+    }
+
+    /**
+     * @param int $jsonOptions
+     *
+     * @return void
+     */
+    public function setJsonOptions(int $jsonOptions) : void
+    {
+        $this->jsonOptions = $jsonOptions;
+    }
+
+    /**
+     * @param int $jsonDepth
+     *
+     * @return void
+     */
+    public function setJsonDepth(int $jsonDepth) : void
+    {
+        $this->jsonDepth = $jsonDepth;
     }
 
     /**
@@ -58,6 +92,22 @@ class TelegramHandler extends AbstractProcessingHandler
     public function getRecipients() : array
     {
         return $this->recipients;
+    }
+
+    /**
+     * @return int
+     */
+    public function getJsonOptions() : int
+    {
+        return $this->jsonOptions;
+    }
+
+    /**
+     * @return int
+     */
+    public function getJsonDepth() : int
+    {
+        return $this->jsonDepth;
     }
 
     /**
@@ -164,7 +214,13 @@ class TelegramHandler extends AbstractProcessingHandler
         $output = '';
 
         foreach ($this->recipients as $recipient) {
-            $data = escapeshellarg(json_encode(($params + ['chat_id' => $recipient]), JSON_UNESCAPED_UNICODE));
+            $json = json_encode(
+                $params + ['chat_id' => $recipient],
+                $this->jsonOptions,
+                $this->jsonDepth
+            );
+
+            $data = escapeshellarg($json);
 
             if ($silent) {
                 `curl -s -X 'POST' -H 'Content-Type: application/json' -d $data $uri > /dev/null 2>&1 &`;

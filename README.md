@@ -54,6 +54,20 @@ $logger->debug('Hello, world!', [
 ]);
 ```
 
+### JSON encoding control
+
+```php
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+
+// See: https://php.net/json_encode
+// See: https://www.php.net/manual/en/json.constants.php
+$sender->setJsonOptions(JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+// See: https://php.net/json_encode
+$sender->setJsonDepth(32);
+```
+
 ## Test run
 
 Create your `phpunit.xml` file:
@@ -71,3 +85,4 @@ php vendor/bin/phpunit --colors=always --coverage-text
 ## Useful links
 
 * https://core.telegram.org/bots/api
+* https://www.php.net/manual/en/json.constants.php
