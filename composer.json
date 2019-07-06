@@ -16,6 +16,10 @@
             "name": "Anatoly Fenric",
             "email": "anatoly@fenric.ru",
             "homepage": "https://anatoly.fenric.ru/"
+        },
+        {
+            "name": "Ioannes (Ivan Trukhin)",
+            "homepage": "https://github.com/itrukhin"
         }
     ],
     "require": {
@@ -34,8 +38,8 @@
     },
     "scripts": {
         "test": [
-            "phpunit --colors=always --coverage-text",
-            "phpcs"
+            "phpcs",
+            "phpunit --colors=always --coverage-text"
         ]
     }
 }

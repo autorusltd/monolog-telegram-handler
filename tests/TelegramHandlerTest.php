@@ -416,4 +416,58 @@ class TelegramHandlerTest extends TestCase
 
         $this->assertTrue($logger->debug(__METHOD__));
     }
+
+    /**
+     * @return void
+     */
+    public function testGetDefaultJsonOptions() : void
+    {
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            [$_ENV['TELEGRAM_RECIPIENT']]
+        );
+
+        $this->assertEquals(0, $handler->getJsonOptions());
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetDefaultJsonDepth() : void
+    {
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            [$_ENV['TELEGRAM_RECIPIENT']]
+        );
+
+        $this->assertEquals(512, $handler->getJsonDepth());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetJsonOptions() : void
+    {
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            [$_ENV['TELEGRAM_RECIPIENT']]
+        );
+
+        $handler->setJsonOptions(\JSON_FORCE_OBJECT);
+        $this->assertEquals(\JSON_FORCE_OBJECT, $handler->getJsonOptions());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetJsonDepth() : void
+    {
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            [$_ENV['TELEGRAM_RECIPIENT']]
+        );
+
+        $handler->setJsonDepth(256);
+        $this->assertEquals(256, $handler->getJsonDepth());
+    }
 }

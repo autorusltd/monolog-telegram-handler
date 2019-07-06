@@ -1,13 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="Arus Coding Standard">
-    <description>Arus Coding Standard</description>
-
-    <arg value="p"/>
-    <arg name="colors"/>
-
-    <!-- https://github.com/squizlabs/PHP_CodeSniffer/wiki/Customisable-Sniff-Properties -->
-    <rule ref="PSR2"/>
-    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="./vendor/arus/php-coding-standard/ruleset.xml"/>
 
     <file>src</file>
     <file>tests</file>
