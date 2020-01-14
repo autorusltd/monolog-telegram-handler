@@ -470,4 +470,21 @@ class TelegramHandlerTest extends TestCase
         $handler->setJsonDepth(256);
         $this->assertEquals(256, $handler->getJsonDepth());
     }
+
+    /**
+     * @return void
+     */
+    public function testUrl() : void
+    {
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            [$_ENV['TELEGRAM_RECIPIENT']]
+        );
+
+        $this->assertSame('https://api.telegram.org', $handler->getUrl());
+
+        $handler->setUrl('http://localhost');
+
+        $this->assertSame('http://localhost', $handler->getUrl());
+    }
 }

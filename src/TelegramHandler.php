@@ -23,6 +23,11 @@ class TelegramHandler extends AbstractProcessingHandler
     /**
      * @var string
      */
+    private $url = 'https://api.telegram.org';
+
+    /**
+     * @var string
+     */
     private $token;
 
     /**
@@ -59,6 +64,16 @@ class TelegramHandler extends AbstractProcessingHandler
     }
 
     /**
+     * @param string $url
+     *
+     * @return void
+     */
+    public function setUrl(string $url) : void
+    {
+        $this->url = $url;
+    }
+
+    /**
      * @param int $jsonOptions
      *
      * @return void
@@ -76,6 +91,14 @@ class TelegramHandler extends AbstractProcessingHandler
     public function setJsonDepth(int $jsonDepth) : void
     {
         $this->jsonDepth = $jsonDepth;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl() : string
+    {
+        return $this->url;
     }
 
     /**
@@ -209,7 +232,7 @@ class TelegramHandler extends AbstractProcessingHandler
      */
     protected function process(string $method, array $params, bool $silent) : ?string
     {
-        $uri = escapeshellarg("https://api.telegram.org/bot{$this->token}/{$method}");
+        $uri = escapeshellarg("{$this->url}/bot{$this->token}/{$method}");
 
         $output = '';
 
