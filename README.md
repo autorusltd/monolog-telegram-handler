@@ -10,7 +10,7 @@
 ## Installation (via composer)
 
 ```bash
-composer require arus/monolog-telegram-handler
+composer require 'arus/monolog-telegram-handler:^1.1'
 ```
 
 ## How to use?
@@ -66,6 +66,12 @@ $sender->setJsonOptions(JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
 // See: https://php.net/json_encode
 $sender->setJsonDepth(32);
+```
+
+### Set custom API URL
+
+```php
+$sender->setUrl('http://localhost');
 ```
 
 ## Test run
