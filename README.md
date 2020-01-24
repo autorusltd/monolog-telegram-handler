@@ -1,4 +1,4 @@
-## Arus // Monolog Telegram Handler for PHP 7.1+
+## Arus // Monolog Telegram Handler for PHP 7.2+
 
 [![Build Status](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/badges/build.png?b=master)](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/?branch=master)
