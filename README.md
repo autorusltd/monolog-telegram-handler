@@ -1,4 +1,4 @@
-## Arus // Monolog Telegram Handler for PHP 7.1+ based on CLI CURL utility
+## Arus // Monolog Telegram Handler for PHP 7.1+
 
 [![Build Status](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/badges/build.png?b=master)](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/autorusltd/monolog-telegram-handler/?branch=master)
@@ -10,7 +10,7 @@
 ## Installation (via composer)
 
 ```bash
-composer require 'arus/monolog-telegram-handler:^1.1'
+composer require 'arus/monolog-telegram-handler:^2.0'
 ```
 
 ## How to use?
@@ -19,10 +19,10 @@ composer require 'arus/monolog-telegram-handler:^1.1'
 use Arus\Monolog\Handler\TelegramHandler;
 use Monolog\Logger;
 
-$token = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11';
-$recipients = ['@channelusername'];
+$token = '000000000:000000000ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+$recipient = '000000000';
 
-$sender = new TelegramHandler($token, $recipients);
+$sender = new TelegramHandler($token, $recipient);
 
 $logger = new Logger('app');
 $logger->pushHandler($sender);
@@ -30,48 +30,42 @@ $logger->pushHandler($sender);
 $logger->debug('Hello, world!');
 ```
 
-### Send a photo...
+#### Send a photo...
 
 ```php
 $logger->debug('Hello, world!', [
-    'photo' => 'https://...',
+    'photo' => 'https://example.com/photo.jpeg',
 ]);
 ```
 
-### Send an animation...
+#### Send an animation...
 
 ```php
 $logger->debug('Hello, world!', [
-    'animation' => 'https://...',
+    'animation' => 'https://example.com/photo.gif',
 ]);
 ```
 
-### Send a video...
+#### Send a video...
 
 ```php
 $logger->debug('Hello, world!', [
-    'video' => 'https://...',
+    'video' => 'https://example.com/photo.mp4',
 ]);
 ```
 
-### JSON encoding control
+### Set custom API URL (relevant for Russia)
+
+#### Via API
 
 ```php
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
-
-// See: https://php.net/json_encode
-// See: https://www.php.net/manual/en/json.constants.php
-$sender->setJsonOptions(JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-// See: https://php.net/json_encode
-$sender->setJsonDepth(32);
+$sender->setUrl('https://proxy.api.telegram.example.com');
 ```
 
-### Set custom API URL
+#### Via environment
 
 ```php
-$sender->setUrl('http://localhost');
+putenv('TELEGRAM_URL=https://proxy.api.telegram.example.com');
 ```
 
 ## Test run
@@ -91,4 +85,3 @@ php vendor/bin/phpunit --colors=always --coverage-text
 ## Useful links
 
 * https://core.telegram.org/bots/api
-* https://www.php.net/manual/en/json.constants.php
