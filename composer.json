@@ -1,7 +1,7 @@
 {
     "name": "arus/monolog-telegram-handler",
     "homepage": "https://github.com/autorusltd/monolog-telegram-handler",
-    "description": "Arus // Monolog Telegram Handler for PHP 7.1+",
+    "description": "Arus // Monolog Telegram Handler for PHP 7.2+",
     "license": "MIT",
     "keywords": [
         "arus",
@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "monolog/monolog": "^2.0"
     },
     "require-dev": {
