@@ -1,15 +1,13 @@
 {
     "name": "arus/monolog-telegram-handler",
     "homepage": "https://github.com/autorusltd/monolog-telegram-handler",
-    "description": "Arus // Monolog Telegram Handler for PHP 7.1+ based on CLI CURL utility",
+    "description": "Arus // Monolog Telegram Handler for PHP 7.2+",
     "license": "MIT",
     "keywords": [
         "arus",
         "fenric",
         "monolog",
-        "handler",
-        "psr-1",
-        "psr-2"
+        "telegram"
     ],
     "authors": [
         {
@@ -23,13 +21,12 @@
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": "^7.2",
+        "monolog/monolog": "^2.0"
     },
     "require-dev": {
         "arus/php-coding-standard": "^1.0",
-        "phpunit/phpunit": "7.5.1",
-        "phpunit/php-code-coverage": "^6.1",
-        "monolog/monolog": "^1.24"
+        "phpunit/phpunit": "7.5.1"
     },
     "autoload": {
         "psr-4": {
