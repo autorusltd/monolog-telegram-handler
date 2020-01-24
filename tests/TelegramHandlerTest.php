@@ -8,19 +8,19 @@ namespace Arus\Monolog\Handler\Tests;
 use Arus\Monolog\Handler\TelegramHandler;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Handler\HandlerInterface;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+
+/**
+ * Import functions
+ */
+use function putenv;
 
 /**
  * TelegramHandlerTest
  */
 class TelegramHandlerTest extends TestCase
 {
-    // phpcs:disable
-    private const EXAMPLE_PHOTO = 'https://pixabay.com/get/52e1d7404956ac14f1dc8460825668204022dfe05550724f7d2a72d4/eyes-4123340_640.jpg';
-    private const EXAMPLE_ANIMATION = 'https://www.easygifanimator.net/images/samples/texteffects.gif';
-    private const EXAMPLE_VIDEO = 'http://techslides.com/demos/sample-videos/small.mp4';
-    // phpcs:enable
 
     /**
      * @return void
@@ -33,7 +33,6 @@ class TelegramHandlerTest extends TestCase
         );
 
         $this->assertInstanceOf(AbstractProcessingHandler::class, $handler);
-        $this->assertInstanceOf(HandlerInterface::class, $handler);
     }
 
     /**
@@ -75,7 +74,7 @@ class TelegramHandlerTest extends TestCase
         $handler = new TelegramHandler(
             $_ENV['TELEGRAM_TOKEN'],
             $_ENV['TELEGRAM_RECIPIENT'],
-            Logger::WARNING,
+            Logger::ERROR,
             false
         );
 
@@ -90,7 +89,7 @@ class TelegramHandlerTest extends TestCase
         );
 
         $this->assertEquals(
-            Logger::WARNING,
+            Logger::ERROR,
             $handler->getLevel()
         );
 
@@ -103,81 +102,7 @@ class TelegramHandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testSendMessageThroughRecordContext() : void
-    {
-        $logger = new Logger(__METHOD__);
-
-        $logger->pushHandler(new TelegramHandler(
-            $_ENV['TELEGRAM_TOKEN'],
-            $_ENV['TELEGRAM_RECIPIENT']
-        ));
-
-        $logger->debug(__METHOD__);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @return void
-     */
-    public function testSendAnimationThroughRecordContext() : void
-    {
-        $logger = new Logger(__METHOD__);
-
-        $logger->pushHandler(new TelegramHandler(
-            $_ENV['TELEGRAM_TOKEN'],
-            $_ENV['TELEGRAM_RECIPIENT']
-        ));
-
-        $logger->debug(__METHOD__, [
-            'animation' => self::EXAMPLE_ANIMATION,
-        ]);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @return void
-     */
-    public function testSendPhotoThroughRecordContext() : void
-    {
-        $logger = new Logger(__METHOD__);
-
-        $logger->pushHandler(new TelegramHandler(
-            $_ENV['TELEGRAM_TOKEN'],
-            $_ENV['TELEGRAM_RECIPIENT']
-        ));
-
-        $logger->debug(__METHOD__, [
-            'photo' => self::EXAMPLE_PHOTO,
-        ]);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @return void
-     */
-    public function testSendVideoThroughRecordContext() : void
-    {
-        $logger = new Logger(__METHOD__);
-
-        $logger->pushHandler(new TelegramHandler(
-            $_ENV['TELEGRAM_TOKEN'],
-            $_ENV['TELEGRAM_RECIPIENT']
-        ));
-
-        $logger->debug(__METHOD__, [
-            'video' => self::EXAMPLE_VIDEO,
-        ]);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @return void
-     */
-    public function testUrl() : void
+    public function testDefaultUrl() : void
     {
         $handler = new TelegramHandler(
             $_ENV['TELEGRAM_TOKEN'],
@@ -185,9 +110,147 @@ class TelegramHandlerTest extends TestCase
         );
 
         $this->assertSame('https://api.telegram.org', $handler->getUrl());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetUrlThroughMethod() : void
+    {
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            $_ENV['TELEGRAM_RECIPIENT']
+        );
 
         $handler->setUrl('http://localhost');
 
         $this->assertSame('http://localhost', $handler->getUrl());
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testSetUrlThroughEnvironment() : void
+    {
+        putenv('TELEGRAM_URL=http://127.0.0.1');
+
+        $handler = new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            $_ENV['TELEGRAM_RECIPIENT']
+        );
+
+        $this->assertSame('http://127.0.0.1', $handler->getUrl());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSendAnimation() : void
+    {
+        $logger = new Logger(__FUNCTION__);
+
+        $logger->pushHandler(new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            $_ENV['TELEGRAM_RECIPIENT']
+        ));
+
+        $logger->debug(__FUNCTION__, [
+            'animation' => 'https://www.easygifanimator.net/images/samples/texteffects.gif',
+        ]);
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @return void
+     */
+    public function testSendPhoto() : void
+    {
+        $logger = new Logger(__FUNCTION__);
+
+        $logger->pushHandler(new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            $_ENV['TELEGRAM_RECIPIENT']
+        ));
+
+        $logger->debug(__FUNCTION__, [
+            'photo' => 'https://telegram.org/img/t_logo.png',
+        ]);
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @return void
+     */
+    public function testSendVideo() : void
+    {
+        $logger = new Logger(__FUNCTION__);
+
+        $logger->pushHandler(new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            $_ENV['TELEGRAM_RECIPIENT']
+        ));
+
+        $logger->debug(__FUNCTION__, [
+            'video' => 'http://techslides.com/demos/sample-videos/small.mp4',
+        ]);
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @return void
+     */
+    public function testSendMessage() : void
+    {
+        $logger = new Logger(__FUNCTION__);
+
+        $logger->pushHandler(new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            $_ENV['TELEGRAM_RECIPIENT']
+        ));
+
+        $logger->debug(__FUNCTION__);
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @return void
+     */
+    public function testInvalidToken() : void
+    {
+        $logger = new Logger(__FUNCTION__);
+
+        $logger->pushHandler(new TelegramHandler(
+            '000000000:000000000ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            $_ENV['TELEGRAM_RECIPIENT']
+        ));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Telegram error: Unauthorized');
+
+        $logger->debug(__FUNCTION__);
+    }
+
+    /**
+     * @return void
+     */
+    public function testInvalidRecipient() : void
+    {
+        $logger = new Logger(__FUNCTION__);
+
+        $logger->pushHandler(new TelegramHandler(
+            $_ENV['TELEGRAM_TOKEN'],
+            '000000000'
+        ));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Telegram error: Bad Request: chat not found');
+
+        $logger->debug(__FUNCTION__);
     }
 }

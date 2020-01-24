@@ -13,9 +13,19 @@ use RuntimeException;
 /**
  * Import functions
  */
+use function curl_init;
+use function curl_setopt_array;
 use function getenv;
-use function escapeshellarg;
-use function json_encode;
+use function http_build_query;
+use function json_decode;
+use function sprintf;
+
+/**
+ * Import constants
+ */
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_RETURNTRANSFER;
+use const CURLOPT_URL;
 
 /**
  * TelegramHandler
@@ -24,16 +34,22 @@ class TelegramHandler extends AbstractProcessingHandler
 {
 
     /**
+     * Telegram API URL
+     *
      * @var string
      */
     private $url;
 
     /**
+     * Telegram API token
+     *
      * @var string
      */
     private $token;
 
     /**
+     * Messages recipient
+     *
      * @var string
      */
     private $recipient;
@@ -56,6 +72,8 @@ class TelegramHandler extends AbstractProcessingHandler
     }
 
     /**
+     * Sets the given telegram API URL to the handler
+     *
      * @param string $url
      *
      * @return void
@@ -66,6 +84,8 @@ class TelegramHandler extends AbstractProcessingHandler
     }
 
     /**
+     * Gets telegram API URL
+     *
      * @return string
      */
     public function getUrl() : string
@@ -74,6 +94,8 @@ class TelegramHandler extends AbstractProcessingHandler
     }
 
     /**
+     * Gets telegram API token
+     *
      * @return string
      */
     public function getToken() : string
@@ -82,6 +104,8 @@ class TelegramHandler extends AbstractProcessingHandler
     }
 
     /**
+     * Gets messages recipient
+     *
      * @return string
      */
     public function getRecipient() : string
@@ -96,31 +120,39 @@ class TelegramHandler extends AbstractProcessingHandler
     {
         if (isset($record['context']['animation'])) {
             $this->send('sendAnimation', [
+                'chat_id' => $this->recipient,
                 'animation' => $record['context']['animation'],
                 'caption' => $record['formatted'],
             ]);
         } elseif (isset($record['context']['photo'])) {
             $this->send('sendPhoto', [
+                'chat_id' => $this->recipient,
                 'photo' => $record['context']['photo'],
                 'caption' => $record['formatted'],
             ]);
         } elseif (isset($record['context']['video'])) {
             $this->send('sendVideo', [
+                'chat_id' => $this->recipient,
                 'video' => $record['context']['video'],
                 'caption' => $record['formatted'],
             ]);
         } else {
             $this->send('sendMessage', [
+                'chat_id' => $this->recipient,
                 'text' => $record['formatted'],
             ]);
         }
     }
 
     /**
+     * Sends a message with the given data through the given telegram API method
+     *
      * @param string $method
      * @param array $data
      *
      * @return void
+     *
+     * @throws RuntimeException
      *
      * @link https://core.telegram.org/bots/api#sendanimation
      * @link https://core.telegram.org/bots/api#sendphoto
@@ -129,21 +161,21 @@ class TelegramHandler extends AbstractProcessingHandler
      */
     protected function send(string $method, array $data) : void
     {
-        $data['chat_id'] = $this->recipient;
-
-        $url = sprintf('%s/bot%s/%s', $this->url, $this->token, $method);
-
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        curl_setopt_array($ch, [
+            CURLOPT_URL => sprintf('%s/bot%s/%s', $this->url, $this->token, $method),
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_RETURNTRANSFER => true,
+        ]);
 
         $result = Curl\Util::execute($ch);
-        $result = json_decode($result, true);
+        $response = json_decode($result, true);
 
-        if ($result['ok'] === false) {
-            throw new RuntimeException('Telegram API error. Description: ' . $result['description']);
+        if (false === $response['ok']) {
+            throw new RuntimeException(
+                sprintf('Telegram error: %s', $response['description'])
+            );
         }
     }
 }
