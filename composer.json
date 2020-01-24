@@ -7,9 +7,7 @@
         "arus",
         "fenric",
         "monolog",
-        "handler",
-        "psr-1",
-        "psr-2"
+        "telegram"
     ],
     "authors": [
         {
