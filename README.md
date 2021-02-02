@@ -32,7 +32,7 @@ $logger->pushHandler($sender);
 $logger->debug('Hello, world!');
 ```
 
-#### Send a photo...
+#### Send a photo
 
 ```php
 $logger->debug('Hello, world!', [
@@ -40,19 +40,19 @@ $logger->debug('Hello, world!', [
 ]);
 ```
 
-#### Send an animation...
+#### Send an animation
 
 ```php
 $logger->debug('Hello, world!', [
-    'animation' => 'https://example.com/photo.gif',
+    'animation' => 'https://example.com/animation.gif',
 ]);
 ```
 
-#### Send a video...
+#### Send a video
 
 ```php
 $logger->debug('Hello, world!', [
-    'video' => 'https://example.com/photo.mp4',
+    'video' => 'https://example.com/video.mp4',
 ]);
 ```
 
