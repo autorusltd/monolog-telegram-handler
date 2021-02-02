@@ -12,7 +12,7 @@
 ## Installation (via composer)
 
 ```bash
-composer require 'arus/monolog-telegram-handler:^2.0'
+composer require 'arus/monolog-telegram-handler:^2.1'
 ```
 
 ## How to use?
